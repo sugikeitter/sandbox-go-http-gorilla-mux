@@ -2,15 +2,32 @@ package main
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
+	usageMsg := `Usage:
+	<command> <address> <port>
+`
+	if len(os.Args) != 3 {
+		fmt.Printf(usageMsg)
+		os.Exit(1)
+	}
+
+	addr := os.Args[1]
+	port := os.Args[2]
+
+	if addr == "" || port == "" {
+		fmt.Printf(usageMsg)
+		os.Exit(1)
+	}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -26,7 +43,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler: r,
-		Addr:    "0.0.0.0:8000",
+		Addr:    addr + ":" + port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout: 15 * time.Second,
 	}

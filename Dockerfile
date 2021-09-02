@@ -5,6 +5,9 @@ RUN apk add --no-cache git
 RUN go env -w GOPROXY=direct
 # Clear GOPATH for go.mod
 ENV GOPATH=
+# ARG
+ARG ADDR="0.0.0.0"
+ARG PORT="80"
 # cache dependencies
 ADD go.mod go.sum ./
 RUN go mod download
@@ -15,4 +18,4 @@ RUN go build -o /bin/sandbox-go-http
 FROM golang:1.17-alpine
 #Copy the build's output binary from the previous build container
 COPY --from=build /bin/sandbox-go-http /bin/sandbox-go-http
-ENTRYPOINT ["/bin/sandbox-go-http"]
+ENTRYPOINT ["/bin/sandbox-go-http", "${ADDR}", "${PORT}"]
