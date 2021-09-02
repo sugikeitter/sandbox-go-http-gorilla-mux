@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	fmt.Printf("start!")
+
 	usageMsg := `Usage:
 	<command> <address> <port>
 `
@@ -42,11 +44,12 @@ func main() {
 	})
 
 	srv := &http.Server{
-		Handler: r,
-		Addr:    addr + ":" + port,
+		Handler:      r,
+		Addr:         addr + ":" + port,
 		WriteTimeout: 15 * time.Second,
-		ReadTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())
+	fmt.Printf("end!")
 }
