@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +9,8 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
+var counter = 0
 
 func main() {
 	fmt.Printf("start!")
@@ -32,15 +33,18 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 		nt := time.Now()
-		json.NewEncoder(w).Encode(map[string]string{"message": "Hello", "time": nt.Format("2006/01/02 15:04:05.000")})
-	})
-	r.HandleFunc("/{name}", func(w http.ResponseWriter, r *http.Request) {
-		reqPathVars := mux.Vars(r)
-
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"message": "Hello, " + reqPathVars["name"]})
+		counter++
+		res := fmt.Sprintf(
+			`<html>
+			<h1>Hello</h1>
+			<p>現在時刻: %s</p>
+			<p>あなたは %d番目の閲覧者です。</p>
+			</html>`,
+			nt.Format("2006/01/02 15:04:05.000"),
+			counter)
+		fmt.Fprintf(w, res)
 	})
 
 	srv := &http.Server{
