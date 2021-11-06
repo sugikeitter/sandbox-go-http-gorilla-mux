@@ -11,6 +11,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var counter = 0
+
 func main() {
 	fmt.Printf("start!")
 
