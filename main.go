@@ -31,12 +31,30 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/index.html", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+		nt := time.Now()
+		counter++
+		res := fmt.Sprintf(
+			`<html>
+			<h1>Hello</h1>
+			<p>現在時刻: %s</p>
+			<p>あなたは %d番目の閲覧者です。</p>
+			</html>`,
+			nt.Format("2006/01/02 15:04:05.000"),
+			counter)
+		fmt.Fprintf(w, res)
+	})
+	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+		fmt.Fprintf(w, "OK")
+	})
+	r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		nt := time.Now()
 		json.NewEncoder(w).Encode(map[string]string{"message": "Hello", "time": nt.Format("2006/01/02 15:04:05.000")})
 	})
-	r.HandleFunc("/{name}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/greet/{name}", func(w http.ResponseWriter, r *http.Request) {
 		reqPathVars := mux.Vars(r)
 
 		w.Header().Set("Content-Type", "application/json")
