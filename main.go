@@ -33,7 +33,7 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/index.html", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 		nt := time.Now()
 		counter++
