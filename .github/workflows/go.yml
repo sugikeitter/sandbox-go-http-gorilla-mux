@@ -28,7 +28,7 @@ jobs:
 
     - name: Check update
       id: check
-      run: test `git status ./bin -s | wc -l` != 1
+      run: test `git status ./bin -s | wc -l` != 0
     
     - name: Push
       if: success()
