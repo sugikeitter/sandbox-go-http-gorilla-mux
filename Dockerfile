@@ -1,6 +1,4 @@
 FROM public.ecr.aws/bitnami/golang:latest AS build
-#Install git
-RUN apk add --no-cache git
 #Get the hello world package from a GitHub repository
 RUN go env -w GOPROXY=direct
 # Clear GOPATH for go.mod
