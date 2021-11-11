@@ -32,7 +32,7 @@ func main() {
 	}
 
 	fmt.Println("start!")
-	myPrivateIp := myPrivateIp()
+	myPrivateIps := myPrivateIps()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +56,7 @@ func main() {
 	r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		nt := time.Now()
-		json.NewEncoder(w).Encode(map[string]string{"message": "Hello", "time": nt.Format("2006/01/02 15:04:05.000"), "IP": myPrivateIp})
+		json.NewEncoder(w).Encode(map[string]string{"message": "Hello", "time": nt.Format("2006/01/02 15:04:05.000"), "IP": fmt.Sprintf("%s", myPrivateIps)})
 	})
 	r.HandleFunc("/greet/{name}", func(w http.ResponseWriter, r *http.Request) {
 		reqPathVars := mux.Vars(r)
@@ -77,14 +77,15 @@ func main() {
 }
 
 // プライベートIP（一番最初のもの）を返す
-func myPrivateIp() string {
+func myPrivateIps() []string {
 	netInterfaceAddresses, _ := net.InterfaceAddrs()
 
+	ips := []string{}
 	for _, netInterfaceAddress := range netInterfaceAddresses {
 		networkIp, ok := netInterfaceAddress.(*net.IPNet)
 		if ok && !networkIp.IP.IsLoopback() && networkIp.IP.To4() != nil {
-			return networkIp.IP.String()
+			ips = append(ips, networkIp.IP.String())
 		}
 	}
-	return "0.0.0.0"
+	return ips
 }
