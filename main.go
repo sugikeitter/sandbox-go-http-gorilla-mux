@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"time"
@@ -14,13 +15,11 @@ import (
 var counter = 0
 
 func main() {
-	fmt.Printf("start!")
-
 	usageMsg := `Usage:
 	<command> <address> <port>
 `
 	if len(os.Args) != 3 {
-		fmt.Printf(usageMsg)
+		fmt.Println(usageMsg)
 		os.Exit(1)
 	}
 
@@ -28,9 +27,12 @@ func main() {
 	port := os.Args[2]
 
 	if addr == "" || port == "" {
-		fmt.Printf(usageMsg)
+		fmt.Println(usageMsg)
 		os.Exit(1)
 	}
+
+	fmt.Println("start!")
+	myPrivateIp := myPrivateIp()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -42,10 +44,10 @@ func main() {
 			<h1>Hello</h1>
 			<p>現在時刻: %s</p>
 			<p>あなたは %d番目の閲覧者です。</p>
-			</html>`,
+</html>`,
 			nt.Format("2006/01/02 15:04:05.000"),
 			counter)
-		fmt.Fprintf(w, res)
+		fmt.Fprint(w, res)
 	})
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
@@ -54,7 +56,7 @@ func main() {
 	r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		nt := time.Now()
-		json.NewEncoder(w).Encode(map[string]string{"message": "Hello", "time": nt.Format("2006/01/02 15:04:05.000")})
+		json.NewEncoder(w).Encode(map[string]string{"message": "Hello", "time": nt.Format("2006/01/02 15:04:05.000"), "IP": myPrivateIp})
 	})
 	r.HandleFunc("/greet/{name}", func(w http.ResponseWriter, r *http.Request) {
 		reqPathVars := mux.Vars(r)
@@ -72,4 +74,17 @@ func main() {
 
 	log.Fatal(srv.ListenAndServe())
 	fmt.Printf("end!")
+}
+
+// プライベートIP（一番最初のもの）を返す
+func myPrivateIp() string {
+	netInterfaceAddresses, _ := net.InterfaceAddrs()
+
+	for _, netInterfaceAddress := range netInterfaceAddresses {
+		networkIp, ok := netInterfaceAddress.(*net.IPNet)
+		if ok && !networkIp.IP.IsLoopback() && networkIp.IP.To4() != nil {
+			return networkIp.IP.String()
+		}
+	}
+	return "0.0.0.0"
 }
