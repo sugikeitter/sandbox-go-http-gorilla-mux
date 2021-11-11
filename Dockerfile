@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine AS build
+FROM public.ecr.aws/bitnami/golang:latest AS build
 #Install git
 RUN apk add --no-cache git
 #Get the hello world package from a GitHub repository
