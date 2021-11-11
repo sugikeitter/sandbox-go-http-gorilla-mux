@@ -10,7 +10,7 @@ RUN go mod download
 ADD . .
 RUN go build -o /bin/sandbox-go-http
 
-FROM golang:1.17-alpine
+FROM public.ecr.aws/debian/debian:stable-slim
 #Copy the build's output binary from the previous build container
 COPY --from=build /bin/sandbox-go-http /bin/sandbox-go-http
 # If you use custom setting, ex) `docker run -p 80:<port> IMAGE <addr> <port>`
