@@ -41,9 +41,16 @@ func main() {
 		counter++
 		res := fmt.Sprintf(
 			`<html>
-			<h1>Hello</h1>
-			<p>現在時刻: %s</p>
-			<p>あなたは %d番目の閲覧者です。</p>
+	<head>
+		<style type="text/css">
+		p {
+			color: #1a1a1a;
+		}
+		</style>
+	</head>
+	<h1>Hello</h1>
+	<p>現在時刻: %s</p>
+	<p>あなたは %d番目の閲覧者です。</p>
 </html>`,
 			nt.Format("2006/01/02 15:04:05.000"),
 			counter)
