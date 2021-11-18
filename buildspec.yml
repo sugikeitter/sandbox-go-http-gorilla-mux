@@ -16,8 +16,7 @@ phases:
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
       - echo Build red version started on `date`
       - echo Building the Docker image...
-      - sed -i.bak 's/#1a1a1a/#ff6347/g' main.go
-      - rm main.go.bak
+      - sed -i 's/#1a1a1a/#ff6347/g' main.go
       - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG-red .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG-red
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest-red
