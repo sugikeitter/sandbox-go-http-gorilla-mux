@@ -51,9 +51,11 @@ func main() {
 	<h1>Hello</h1>
 	<p>現在時刻: %s</p>
 	<p>あなたは %d番目の閲覧者です。</p>
+	<div>from %s</div>
 </html>`,
 			nt.Format("2006/01/02 15:04:05.000"),
-			counter)
+			counter,
+			myPrivateIps)
 		fmt.Fprint(w, res)
 	})
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
